@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home - Infile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js" integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/loadings.js"></script>
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="/css/infile-app.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Control de Asignaciones - Infile</a>
+            </div>
+            <ul class="nav navbar-nav" style="float: right;">
+                <li><a href="/logout">Cerrar sesión</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="text-center">PÁGINA PRINCIPAL - CONTROL DE ASIGNACIONES</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="container">
+            <div class="row">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="registrar-tab" data-toggle="tab" href="#registrar" role="tab" aria-controls="home" aria-selected="true">Registrar un alumno</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="editar-tab" data-toggle="tab" href="#editar" role="tab" aria-controls="profile" aria-selected="false">Editar / Eliminar un alumno</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="asignar-grado-tab" data-toggle="tab" href="#asignar-grado" role="tab" aria-controls="contact" aria-selected="false">Asignar alumno a un grado</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="asignar-curso-tab" data-toggle="tab" href="#asignar-curso" role="tab" aria-controls="contact" aria-selected="false">Asignar curso a un alumno</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="notas-tab" data-toggle="tab" href="#notas" role="tab" aria-controls="contact" aria-selected="false">Modificar notas</a>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="registrar" role="tabpanel" aria-labelledby="registrar-tab">
+                        <div class="section">
+                            <div class="container">
+                                <div class="row">
+                                    <% if (message.error) { %>
+                                        <div id="alertMessage" class="alert alert-danger" role="alert">
+                                            <%= message.error %>
+                                        </div>
+                                    <% } %>
+                                    <% if (message.info) { %>
+                                        <div id="infoMessage" class="alert alert-success" role="alert">
+                                            <%= message.info %>
+                                        </div>
+                                    <% } %>
+                                    <form action="/registerStudent" action="post">
+                                        <div class="form-group">
+                                            <label for="aname">Nombres</label>
+                                            <input type="text" class="form-control" id="aname" name="aname" placeholder="Ingresar nombres">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="alastname">Apellidos</label>
+                                            <input type="text" class="form-control" id="alastname" name="alastname" placeholder="Ingresar apellidos">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="agenero">Género</label><br>
+                                            <select id="agenero" name="agenero" class="custom-select">
+                                                <option selected>Selecciona una opción</option>
+                                                <option value="0">Hombre</option>
+                                                <option value="1">Mujer</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Registrar</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="editar" role="tabpanel" aria-labelledby="editar-tab">b</div>
+                    <div class="tab-pane fade" id="asignar-grado" role="tabpanel" aria-labelledby="asignar-grado-tab">c</div>
+                    <div class="tab-pane fade" id="asignar-curso" role="tabpanel" aria-labelledby="asignar-curso-tab">d</div>
+                    <div class="tab-pane fade" id="notas" role="tabpanel" aria-labelledby="notas-tab">e</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            setTimeout(function() {
+                $("#alertMessage").fadeOut('fast');
+            }, 3000);
+            setTimeout(function() {
+                $("#infoMessage").fadeOut('fast');
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

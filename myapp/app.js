@@ -76,7 +76,7 @@ app.get('/home', function(req, res) {
     if (!ssn.mail) {
         res.redirect('/');
     } else {
-        res.sendFile('home.html', { root: path.join(__dirname, './views') });
+        res.render('home.ejs', { root: path.join(__dirname, './views') });
     }
 });
 
@@ -96,17 +96,19 @@ app.post('/login', function(req, res){
     let mail = req.body.mail;
     let pass = req.body.pass;
     if (mail != '' && pass != '') {
-        let sql = "SELECT password FROM colegio WHERE correo = ?";
+        let sql = "SELECT * FROM colegio WHERE correo = ?";
         conn.query(sql, [mail], function (err, result, fields) {
             if (err) {
                 req.flash('info', 'No existe el usuario.');
                 res.redirect('/');
             } else {
                 let savedPass = result[0].password;
+                let idSchool = result[0].id_colegio;
                 bcrypt.compare(pass, savedPass, function (err, result) {
                     if (result) {
                         ssn = req.session;
                         ssn.mail = mail;
+                        ssn.id_school = idSchool;
                         res.redirect('/home');
                     } else {
                         req.flash('error', 'Credenciales incorrectas.');
@@ -128,4 +130,43 @@ app.get('/logout',function(req,res){
             res.redirect('/');
         }
     });
+});
+
+app.get('/registerStudent', function(req, res){
+    
+    ssn = req.session;
+    
+    let nombre = req.query.aname;
+    let apellido = req.query.alastname;
+    let genero = req.query.agenero;
+
+    console.log(nombre);
+    console.log(apellido);
+    console.log(genero);
+
+    if (nombre != '' && apellido != '' && genero != '') {
+        let sql = "INSERT INTO alumno (nombre, apellido, genero) VALUES (?, ?, ?)";
+        conn.query(sql, [nombre, apellido, genero], function (err, result, fields) {
+            if (err) {
+                console.log(err);
+                req.flash('error', 'Ocurrió un error al registrar al alumno.');
+                res.redirect('/home');
+            } else {
+                let idAlumno = result.insertId;
+                sql = "INSERT INTO registro (estado, ref_id_colegio, ref_id_alumno) VALUES (?, ?, ?)";
+                conn.query(sql, [1, ssn.id_school, idAlumno], function (err, result, fields) {
+                    if (err) {
+                        req.flash('error', 'Ocurrió un error al vincular al alumno con el colegio.');
+                        res.redirect('/home');
+                    } else {
+                        req.flash('info', 'Alumno registrado y vinculado correctamente.');
+                        res.redirect('/home');
+                    }
+                });
+            }
+        });
+    } else {
+        res.redirect('/');
+    }
+
 });
