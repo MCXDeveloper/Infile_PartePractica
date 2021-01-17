@@ -336,3 +336,52 @@ app.post('/asignarCurso', function(req, res){
     });
 
 });
+
+app.get('/getNotas', function(req, res){
+
+    ssn = req.session;
+
+    let sql = `
+        SELECT a.*, c.nombre as curso, g.grado, al.*
+        FROM asignacion a
+        JOIN curso c
+        ON a.ref_id_curso = c.id_curso
+        JOIN alumno al
+        ON a.ref_id_alumno = al.id_alumno
+        JOIN registro r
+        ON r.ref_id_alumno = al.id_alumno
+        JOIN matricula m
+        ON m.ref_id_alumno = al.id_alumno
+        JOIN grado g
+        ON m.ref_id_grado = g.id_grado
+        WHERE r.ref_id_colegio = ?
+    `;
+
+    conn.query(sql, [ssn.id_school], function (err, result, fields) {
+        if (err) {
+            console.log(err);
+            res.json({ 'status': false });
+        } else {
+            res.json({ 'status': true, 'data' : result });
+        }
+    });
+
+});
+
+app.put('/updateNotas', function(req, res){
+    if (req.body.zona < 0 || req.body.zona > 75) {
+        res.json({ 'status': false, 'msg' : 'Error. La zona tiene que ser mayor a cero y menor a 75.' });
+    } else if (req.body.final < 0 || req.body.final > 25) {
+        res.json({ 'status': false, 'msg' : 'Error. La zona tiene que ser mayor a cero y menor a 25.' });
+    } else {
+        let sql = "UPDATE asignacion SET zona = ?, final = ? WHERE id_asignacion = ?";
+        conn.query(sql, [ req.body.zona, req.body.final, req.body.idAsig ], function (err, result, fields) {
+            if (err) {
+                console.log(err);
+                res.json({ 'status': false, 'msg' : 'Ocurrió un error al actualizar las notas.' });
+            } else {
+                res.json({ 'status': true, 'msg' : 'Notas actualizadas correctamente.' });
+            }
+        });
+    }
+});

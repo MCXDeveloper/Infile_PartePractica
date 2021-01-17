@@ -45,6 +45,8 @@
                         <%= message.info %>
                     </div>
                 <% } %>
+                <div id="infoMessage2" class="alert alert-success" role="alert" style="display: none;"></div>
+                <div id="alertMessage2" class="alert alert-danger" role="alert" style="display: none;"></div>
                 <nav id="navigation">
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item active">
@@ -143,7 +145,28 @@
                         </div>
                     </div>
                     <div id="notas" class="tab-pane fade">
-                        <h1>Show the last 10 Games</h1>
+                        <div class="section">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Nombre</th>
+                                                    <th scope="col">Grado</th>
+                                                    <th scope="col">Zona</th>
+                                                    <th scope="col">Examen final</th>
+                                                    <th scope="col">Guardar</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="gradesBodyTable">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
@@ -504,6 +527,73 @@
             });
 
         });
+    </script>
+    <script type="text/javascript">
+        
+        $(document).ready(function(){
+            
+            $("#navigation ul.nav > li > a[id='notas-tab']").on("click", function () {
+                $.ajax({
+                    type: 'GET',
+                    url: '/getNotas',
+                    timeout: 50000,
+                    beforeSend: function() {
+                        
+                    },
+                    success: function(obj){
+                        $("#gradesBodyTable").empty();
+                        $.each(obj.data, function( index, value ) {
+                            $("#gradesBodyTable").append(
+                                $("<tr>").append(
+                                    $("<th>").attr("scope", "row").html(index)
+                                ).append(
+                                    $("<td>").html(value.nombre + ' ' + value.apellido)
+                                ).append(
+                                    $("<td>").html(value.grado)
+                                ).append(
+                                    $("<td>").append(
+                                        $("<input>").attr('ref_asignacion', value.id_asignacion).attr('type', 'text').attr('class', 'form-control zoneInput').val(value.zona)
+                                    )
+                                ).append(
+                                    $("<td>").append(
+                                        $("<input>").attr('ref_asignacion', value.id_asignacion).attr('type', 'text').attr('class', 'form-control finalInput').val(value.final)
+                                    )
+                                ).append(
+                                    $("<td>").append(
+                                        $("<button>").attr('ref_asignacion', value.id_asignacion).attr('type', 'button').attr('class', 'btn btn-danger btnSaveGrades').text('Guardar')
+                                    )
+                                )
+                            );
+                        });
+                    }
+                });
+            });
+
+            $(document).on('click', '.btnSaveGrades', function(){
+                
+                let idAsig = $(this).attr('ref_asignacion');
+                let zona = $('.zoneInput[ref_asignacion="'+ idAsig +'"]').val();
+                let final = $('.finalInput[ref_asignacion="'+ idAsig +'"]').val();
+                
+                $.ajax({
+                    type: 'PUT',
+                    url: '/updateNotas',
+                    data: { idAsig : idAsig, zona : zona, final : final },
+                    timeout: 50000,
+                    beforeSend: function() {},
+                    success: function(obj){
+                        let container = (!obj.status) ? '#alertMessage2' : '#infoMessage2';
+                        $(container).html(obj.msg).show();
+                        setTimeout(function() {
+                            $(container).fadeOut('fast');
+                        }, 3000);
+                    }
+                });
+
+            });
+
+        });
+
     </script>
 </body>
 </html>
