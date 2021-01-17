@@ -132,6 +132,7 @@ app.get('/logout',function(req,res){
     });
 });
 
+// TODO - Modificar esta api a POST
 app.get('/registerStudent', function(req, res){
     
     ssn = req.session;
@@ -140,12 +141,8 @@ app.get('/registerStudent', function(req, res){
     let apellido = req.query.alastname;
     let genero = req.query.agenero;
 
-    console.log(nombre);
-    console.log(apellido);
-    console.log(genero);
-
     if (nombre != '' && apellido != '' && genero != '') {
-        let sql = "INSERT INTO alumno (nombre, apellido, genero) VALUES (?, ?, ?)";
+        let sql = "INSERT INTO alumno (nombre, apellido, genero, estado) VALUES (?, ?, ?, 1)";
         conn.query(sql, [nombre, apellido, genero], function (err, result, fields) {
             if (err) {
                 console.log(err);
@@ -168,5 +165,174 @@ app.get('/registerStudent', function(req, res){
     } else {
         res.redirect('/');
     }
+
+});
+
+app.get('/getStudents', function(req, res){
+
+    ssn = req.session;
+
+    let sql = `
+        SELECT a.*, m.*, g.*
+        FROM alumno a
+        JOIN registro r
+        ON a.id_alumno = r.ref_id_alumno
+        LEFT JOIN matricula m
+        ON a.id_alumno = m.ref_id_alumno
+        LEFT JOIN grado g
+        ON m.ref_id_grado = g.id_grado
+        WHERE r.ref_id_colegio = ?
+        AND a.estado = 1
+    `;
+
+    // let sql = "SELECT a.* FROM alumno a JOIN registro r ON a.id_alumno = r.ref_id_alumno WHERE r.ref_id_colegio = ? AND a.estado = 1";
+    conn.query(sql, [ssn.id_school], function (err, result, fields) {
+        if (err) {
+            console.log(err);
+            req.flash('error', 'Ocurrió un error al obtener los alumnos.');
+            res.redirect('/home');
+        } else {
+            res.json({ 'data' : result });
+        }
+    });
+
+});
+
+app.get('/getStudent/:id', function(req, res){
+
+    let sql = "SELECT * FROM alumno WHERE id_alumno = ?";
+    conn.query(sql, [req.params.id], function (err, result, fields) {
+        if (err) {
+            console.log(err);
+            res.json({ 'status': false });
+        } else {
+            res.json({ 'status': true, 'data' : result });
+        }
+    });
+
+});
+
+app.post('/updateStudent', function(req, res) {
+    let sql = "UPDATE alumno SET nombre = ?, apellido = ?, genero = ? WHERE id_alumno = ?";
+    conn.query(sql, [ req.body.ename, req.body.elastname, req.body.egenero, req.body.eid ], function (err, result, fields) {
+        if (err) {
+            console.log(err);
+            req.flash('error', 'Ocurrió un error al obtener los alumnos.');
+            res.redirect('/home');
+        } else {
+            req.flash('info', 'Alumno editado correctamente.');
+            res.redirect('/home');
+        }
+    });
+});
+
+app.post('/deleteStudent/:id', function(req, res) {
+    let sql = "UPDATE alumno SET estado = 0 WHERE id_alumno = ?";
+    conn.query(sql, [ req.params.id ], function (err, result, fields) {
+        if (err) {
+            console.log(err);
+            res.json({ 'status': false, 'msg' : 'Ocurrió un error al eliminar al alumno.' });
+        } else {
+            res.json({ 'status': true, 'msg' : 'Alumno eliminado correctamente.' });
+        }
+    });
+});
+
+app.get('/getGrados', function(req, res){
+    let sql = "SELECT * FROM grado WHERE estado = 1";
+    conn.query(sql, [req.params.id], function (err, result, fields) {
+        if (err) {
+            console.log(err);
+            res.json({ 'status': false });
+        } else {
+            res.json({ 'status': true, 'data' : result });
+        }
+    });
+});
+
+app.get('/getGradoStudent/:id', function(req, res){
+
+    let sql = "SELECT ref_id_grado FROM matricula WHERE id_matricula = ?";
+    conn.query(sql, [req.params.id], function (err, result, fields) {
+        if (err) {
+            console.log(err);
+            res.json({ 'status': false });
+        } else {
+            res.json({ 'status': true, 'data' : result });
+        }
+    });
+
+});
+
+app.post('/addMatricula', function(req, res){
+    let sql = "INSERT INTO matricula (estado, ref_id_alumno, ref_id_grado) VALUES (1, ?, ?)";
+    conn.query(sql, [ req.body.m_id_student, req.body.m_grado ], function (err, result, fields) {
+        if (err) {
+            console.log(err);
+            req.flash('error', 'Ocurrió un error al registrar la matricula.');
+            res.redirect('/home');
+        } else {
+            req.flash('info', 'Alumno matriculado correctamente.');
+            res.redirect('/home');
+        }
+    });
+});
+
+app.post('/editMatricula', function(req, res){
+    let sql = "UPDATE matricula SET ref_id_grado = ? WHERE id_matricula = ?";
+    conn.query(sql, [ req.body.me_grado, req.body.me_id_mat ], function (err, result, fields) {
+        if (err) {
+            console.log(err);
+            req.flash('error', 'Ocurrió un error al editar la matricula.');
+            res.redirect('/home');
+        } else {
+            req.flash('info', 'Matricula editada correctamente.');
+            res.redirect('/home');
+        }
+    });
+});
+
+app.get('/getCursos', function(req, res){
+
+    let sql = "SELECT * FROM curso WHERE estado = 1";
+    conn.query(sql, [], function (err, result, fields) {
+        if (err) {
+            console.log(err);
+            res.json({ 'status': false });
+        } else {
+            res.json({ 'status': true, 'data' : result });
+        }
+    });
+
+});
+
+app.post('/asignarCurso', function(req, res){
+
+    // Verifico que el alumno no se encuentre asignado ya al curso.
+    let sql = "SELECT * FROM asignacion WHERE ref_id_alumno = ? AND ref_id_curso = ? AND estado = 1";
+    conn.query(sql, [req.body.asi_alumno, req.body.asi_curso], function (err, result, fields) {
+        if (err) {
+            console.log(err);
+            req.flash('error', 'Error. No se pudieron obtener las asignaciones.');
+            res.redirect('/home');
+        } else {
+            if (result === undefined || result.length == 0) {
+                sql = "INSERT INTO asignacion (zona, final, estado, ref_id_alumno, ref_id_curso) VALUES (0, 0, 1, ?, ?)";
+                conn.query(sql, [req.body.asi_alumno, req.body.asi_curso], function (err, result, fields) {
+                    if (err) {
+                        console.log(err);
+                        req.flash('error', 'Ocurrió un error al asignar al alumno al curso.');
+                        res.redirect('/home');
+                    } else {
+                        req.flash('info', 'Curso asignado correctamente.');
+                        res.redirect('/home');
+                    }
+                });
+            } else {
+                req.flash('error', 'Error. El alumno ya se encuentra asignado a ese curso.');
+                res.redirect('/home');
+            }
+        }
+    });
 
 });

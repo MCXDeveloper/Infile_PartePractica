@@ -121,7 +121,7 @@ input,
 optgroup,
 select,
 textarea {
-    color: inherit;
+    color: black;
     font: inherit;
     margin: 0;
 }
@@ -6779,4 +6779,10 @@ body {
 /* PINGENDO COMMENT DO NOT REMOVE */
 .disableClick{
     pointer-events: none;
+}
+.modLbl {
+    color: black;
+}
+a.nav-link {
+    color: #d9534f;
 }

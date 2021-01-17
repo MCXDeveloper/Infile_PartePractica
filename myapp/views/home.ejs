@@ -35,65 +35,226 @@
     <div class="section">
         <div class="container">
             <div class="row">
-                <ul class="nav nav-tabs" id="myTab" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link active" id="registrar-tab" data-toggle="tab" href="#registrar" role="tab" aria-controls="home" aria-selected="true">Registrar un alumno</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="editar-tab" data-toggle="tab" href="#editar" role="tab" aria-controls="profile" aria-selected="false">Editar / Eliminar un alumno</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="asignar-grado-tab" data-toggle="tab" href="#asignar-grado" role="tab" aria-controls="contact" aria-selected="false">Asignar alumno a un grado</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="asignar-curso-tab" data-toggle="tab" href="#asignar-curso" role="tab" aria-controls="contact" aria-selected="false">Asignar curso a un alumno</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="notas-tab" data-toggle="tab" href="#notas" role="tab" aria-controls="contact" aria-selected="false">Modificar notas</a>
-                    </li>
-                </ul>
-                <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade show active" id="registrar" role="tabpanel" aria-labelledby="registrar-tab">
+                <% if (message.error) { %>
+                    <div id="alertMessage" class="alert alert-danger" role="alert">
+                        <%= message.error %>
+                    </div>
+                <% } %>
+                <% if (message.info) { %>
+                    <div id="infoMessage" class="alert alert-success" role="alert">
+                        <%= message.info %>
+                    </div>
+                <% } %>
+                <nav id="navigation">
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item active">
+                            <a class="nav-link active" id="registrar-tab" data-toggle="tab" href="#registrar" role="tab" aria-controls="home" aria-selected="true">Registrar un alumno</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="editar-tab" data-toggle="tab" href="#editar" role="tab" aria-controls="profile" aria-selected="false">Editar / Matricular / Eliminar un alumno</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="asignar-curso-tab" data-toggle="tab" href="#asignar-curso" role="tab" aria-controls="contact" aria-selected="false">Asignar curso a un alumno</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="notas-tab" data-toggle="tab" href="#notas" role="tab" aria-controls="contact" aria-selected="false">Modificar notas</a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="tab-content">
+                    <div id="registrar" class="tab-pane fade in active">
                         <div class="section">
                             <div class="container">
                                 <div class="row">
-                                    <% if (message.error) { %>
-                                        <div id="alertMessage" class="alert alert-danger" role="alert">
-                                            <%= message.error %>
-                                        </div>
-                                    <% } %>
-                                    <% if (message.info) { %>
-                                        <div id="infoMessage" class="alert alert-success" role="alert">
-                                            <%= message.info %>
-                                        </div>
-                                    <% } %>
-                                    <form action="/registerStudent" action="post">
-                                        <div class="form-group">
-                                            <label for="aname">Nombres</label>
-                                            <input type="text" class="form-control" id="aname" name="aname" placeholder="Ingresar nombres">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="alastname">Apellidos</label>
-                                            <input type="text" class="form-control" id="alastname" name="alastname" placeholder="Ingresar apellidos">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="agenero">Género</label><br>
-                                            <select id="agenero" name="agenero" class="custom-select">
-                                                <option selected>Selecciona una opción</option>
-                                                <option value="0">Hombre</option>
-                                                <option value="1">Mujer</option>
-                                            </select>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Registrar</button>
-                                    </form>
+                                    <div class="col-md-4">
+                                        <form action="/registerStudent" action="post">
+                                            <div class="form-group">
+                                                <label for="aname">Nombres</label>
+                                                <input type="text" class="form-control" id="aname" name="aname" placeholder="Ingresar nombres">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="alastname">Apellidos</label>
+                                                <input type="text" class="form-control" id="alastname" name="alastname" placeholder="Ingresar apellidos">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="agenero">Género</label><br>
+                                                <select id="agenero" name="agenero" class="custom-select">
+                                                    <option selected>Selecciona una opción</option>
+                                                    <option value="0">Hombre</option>
+                                                    <option value="1">Mujer</option>
+                                                </select>
+                                            </div>
+                                            <button type="submit" formmethod="post" class="btn btn-primary">Registrar</button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="editar" role="tabpanel" aria-labelledby="editar-tab">b</div>
-                    <div class="tab-pane fade" id="asignar-grado" role="tabpanel" aria-labelledby="asignar-grado-tab">c</div>
-                    <div class="tab-pane fade" id="asignar-curso" role="tabpanel" aria-labelledby="asignar-curso-tab">d</div>
-                    <div class="tab-pane fade" id="notas" role="tabpanel" aria-labelledby="notas-tab">e</div>
+                    <div id="editar" class="tab-pane fade ">
+                        <div class="section">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Nombres</th>
+                                                    <th scope="col">Apellidos</th>
+                                                    <th scope="col">Género</th>
+                                                    <th scope="col">Grado</th>
+                                                    <th scope="col">Matricula</th>
+                                                    <th scope="col">Editar</th>
+                                                    <th scope="col">Eliminar</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="studentBodyTable">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="asignar-curso" class="tab-pane fade">
+                        <div class="section">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <form action="/asignarCurso" action="post">
+                                            <div class="form-group">
+                                                <label for="asi_alumno">Selecciona un alumno:</label><br>
+                                                <select id="asi_alumno" name="asi_alumno" class="custom-select">
+                                                    
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="asi_curso">Selecciona un curso:</label><br>
+                                                <select id="asi_curso" name="asi_curso" class="custom-select">
+                                                    
+                                                </select>
+                                            </div>
+                                            <button type="submit" formmethod="post" class="btn btn-primary">Asignar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="notas" class="tab-pane fade">
+                        <h1>Show the last 10 Games</h1>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar alumno</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/updateStudent" action="post">
+                        <div class="form-group" style="display:none;">
+                            <input type="text" class="form-control" id="eid" name="eid">
+                        </div>
+                        <div class="form-group">
+                            <label for="ename" class="modLbl">Nombre</label>
+                            <input type="text" class="form-control" id="ename" name="ename" placeholder="Ingresa nombre">
+                        </div>
+                        <div class="form-group">
+                            <label for="elastname" class="modLbl">Apellido</label>
+                            <input type="text" class="form-control" id="elastname" name="elastname" placeholder="Ingresa apellido">
+                        </div>
+                        <div class="form-group">
+                            <label for="egenero" class="modLbl">Género</label><br>
+                            <select id="egenero" name="egenero" class="custom-select">
+                                <option selected>Selecciona una opción</option>
+                                <option value="0">Hombre</option>
+                                <option value="1">Mujer</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" formmethod="post" class="btn btn-primary">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">¿Estas seguro de eliminar este alumno?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" id="btnConfirmModal" class="btn btn-primary">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="addMatModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Agregar matrícula</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/addMatricula" action="post">
+                        <div class="form-group" style="display:none;">
+                            <input type="text" class="form-control" id="m_id_student" name="m_id_student">
+                        </div>
+                        <div class="form-group">
+                            <label for="m_grado" class="modLbl">Selecciona un grado:</label><br>
+                            <select id="m_grado" name="m_grado" class="custom-select">
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" formmethod="post" class="btn btn-primary">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="editMatModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar matrícula</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/editMatricula" action="post">
+                        <div class="form-group" style="display:none;">
+                            <input type="text" class="form-control" id="me_id_mat" name="me_id_mat">
+                        </div>
+                        <div class="form-group">
+                            <label for="me_grado" class="modLbl">Selecciona un grado:</label><br>
+                            <select id="me_grado" name="me_grado" class="custom-select">
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" formmethod="post" class="btn btn-primary">Guardar</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -103,9 +264,245 @@
             setTimeout(function() {
                 $("#alertMessage").fadeOut('fast');
             }, 3000);
+            
             setTimeout(function() {
                 $("#infoMessage").fadeOut('fast');
             }, 3000);
+
+            $("#navigation ul.nav > li > a[id='editar-tab']").on("click", function () {
+                $.ajax({
+                    type: 'GET',
+                    url: '/getStudents',
+                    timeout: 50000,
+                    beforeSend: function() {
+                        
+                    },
+                    success: function(obj){
+                        
+                        $("#studentBodyTable").empty();
+                        $.each(obj.data, function( index, value ) {
+                            $("#studentBodyTable").append(
+                                $("<tr>").append(
+                                    $("<th>").attr("scope", "row").html(value.id_alumno)
+                                ).append(
+                                    $("<td>").html(value.nombre)
+                                ).append(
+                                    $("<td>").html(value.apellido)
+                                ).append(
+                                    $("<td>").html(function(){
+                                        return (value.genero == '0') ? 'Hombre' : 'Mujer';
+                                    })
+                                ).append(
+                                    $("<td>").html(function(){
+                                        return (value.grado == null) ? '-' : value.grado;
+                                    })
+                                ).append(
+                                    $("<td>").append(function() {
+                                        if (value.id_matricula != null) {
+                                            return $("<button>").attr('ref_matricula', value.id_matricula).attr('type', 'button').attr('class', 'btn btn-info btnEditarMatricula').text('Editar matricula')
+                                        } else {
+                                            return $("<button>").attr('ref_alumno', value.id_alumno).attr('type', 'button').attr('class', 'btn btn-primary btnRegistrarMatricula').text('Matricular')
+                                        }
+                                    })
+                                ).append(
+                                    $("<td>").append(
+                                        $("<button>").attr('ref_alumno', value.id_alumno).attr('type', 'button').attr('class', 'btn btn-warning btnEditStudent').text('Editar')
+                                    )
+                                ).append(
+                                    $("<td>").append(
+                                        $("<button>").attr('ref_alumno', value.id_alumno).attr('type', 'button').attr('class', 'btn btn-danger btnDeleteStudent').text('Eliminar')
+                                    )
+                                )
+                            );
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $(document).on('click', '.btnEditStudent', function(){
+                let idStudent = $(this).attr('ref_alumno');
+                $.ajax({
+                    type: 'GET',
+                    url: '/getStudent/' + idStudent,
+                    timeout: 50000,
+                    beforeSend: function() {
+                        
+                    },
+                    success: function(obj){
+                        if (obj.status) {
+                            let data = obj.data[0];
+                            $('#eid').val(data.id_alumno);
+                            $('#ename').val(data.nombre);
+                            $('#elastname').val(data.apellido);
+                            $('#egenero').val(data.genero);
+                            $('#editModal').modal('show');
+                        } else {
+                            alert('Ocurrió un error al intentar obtener los datos del estudiante.');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            
+            $(document).on('click', '.btnDeleteStudent', function(){
+                let idStudent = $(this).attr('ref_alumno');
+                $('#btnConfirmModal').attr('ref_alumno', idStudent);
+                $('#confirmModal').modal('show');                
+            });
+
+            $('#btnConfirmModal').on('click', function(){
+                let idStudent = $(this).attr('ref_alumno');
+                $.ajax({
+                    type: 'POST',
+                    url: '/deleteStudent/' + idStudent,
+                    timeout: 50000,
+                    beforeSend: function() {
+                    },
+                    success: function(obj){
+                        if(!alert(obj.msg)){
+                            window.location.reload();
+                        }
+                    }
+                });
+            });
+
+        });
+    </script>
+    <script type="text/javascript">
+        
+        function getGrados(callback) {
+            $.ajax({
+                type: 'GET',
+                url: '/getGrados',
+                timeout: 50000,
+                beforeSend: function() {
+                },
+                success: callback
+            });
+        }
+
+        function getGradoAlumno(idMat, callback) {
+            $.ajax({
+                type: 'GET',
+                url: '/getGradoStudent/' + idMat,
+                timeout: 50000,
+                beforeSend: function() {
+                },
+                success: callback
+            });
+        }
+        
+        $(document).ready(function(){
+            
+            $(document).on('click', '.btnRegistrarMatricula', function(){
+                
+                let idStudent = $(this).attr('ref_alumno');
+
+                getGrados(function(obj){
+                    if (obj.status) {
+                        $('#m_id_student').val(idStudent);
+                        let $dropdown = $("#m_grado");
+                        $dropdown.empty();
+                        $dropdown.append($("<option />").attr('selected', true).text('Selecciona una opción'));
+                        $.each(obj.data, function() {
+                            $dropdown.append($("<option />").val(this.id_grado).text(this.grado));
+                        });
+                        $('#addMatModal').modal('show');
+                    } else {
+                        alert('Ocurrió un error al obtener los grados.');
+                    }
+                });
+                
+            });
+
+            $(document).on('click', '.btnEditarMatricula', function(){
+                
+                let idMat = $(this).attr('ref_matricula');
+                
+                getGrados(function(obj){
+                    
+                    if (obj.status) {
+                        
+                        $('#me_id_mat').val(idMat);
+                        let $dropdown = $("#me_grado");
+                        $dropdown.empty();
+                        $dropdown.append($("<option />").text('Selecciona una opción'));
+
+                        getGradoAlumno(idMat, function(obj2){
+                            
+                            if (obj2.status) {
+                                
+                                $.each(obj.data, function() {
+                                    if (this.id_grado == obj2.data[0].ref_id_grado) {
+                                        $dropdown.append($("<option />").val(this.id_grado).text(this.grado).attr('selected', true));
+                                    } else {
+                                        $dropdown.append($("<option />").val(this.id_grado).text(this.grado));
+                                    }
+                                });
+                                
+                                $('#editMatModal').modal('show');
+
+                            } else {
+                                alert('Ocurrió un error al obtener el grado del estudiante.');
+                            }
+
+                        });
+                        
+                    } else {
+                        alert('Ocurrió un error al obtener los grados.');
+                    }
+
+                });
+
+            });
+
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            
+            $("#navigation ul.nav > li > a[id='asignar-curso-tab']").on("click", function () {
+                
+                $.ajax({
+                    type: 'GET',
+                    url: '/getStudents',
+                    timeout: 50000,
+                    beforeSend: function() {
+                    },
+                    success: function(obj) {
+                        let $dropdown = $("#asi_alumno");
+                        $dropdown.empty();
+                        $dropdown.append($("<option />").attr('selected', true).text('Selecciona una opción'));
+                        $.each(obj.data, function() {
+                            $dropdown.append($("<option />").val(this.id_alumno).text(this.nombre + ' ' + this.apellido));
+                        });
+                    }
+                });
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/getCursos',
+                    timeout: 50000,
+                    beforeSend: function() {
+                    },
+                    success: function(obj) {
+                        let $dropdown = $("#asi_curso");
+                        $dropdown.empty();
+                        $dropdown.append($("<option />").attr('selected', true).text('Selecciona una opción'));
+                        $.each(obj.data, function() {
+                            $dropdown.append($("<option />").val(this.id_curso).text(this.nombre));
+                        });
+                    }
+                });
+
+            });
+
         });
     </script>
 </body>
