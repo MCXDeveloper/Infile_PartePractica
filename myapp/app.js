@@ -18,7 +18,7 @@ const saltRounds = 10;
  * MySQL Connection.
  */
 let conn = mysql.createConnection({
-    host: 'localhost',
+    host: 'mysqldb',
     port: '3306',
     user: 'root',
     password: '123456',
