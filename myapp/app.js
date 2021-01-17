@@ -80,6 +80,15 @@ app.get('/home', function(req, res) {
     }
 });
 
+app.get('/admin', function(req, res) {
+    ssn = req.session;
+    if (!ssn.mail) {
+        res.redirect('/');
+    } else {
+        res.render('admin.ejs', { root: path.join(__dirname, './views') });
+    }
+});
+
 app.post('/updatePassSchool', function(req, res) {
     let idSchool = req.body.id_school;
     let pass = req.body.pass;
@@ -99,7 +108,7 @@ app.post('/login', function(req, res){
         let sql = "SELECT * FROM colegio WHERE correo = ?";
         conn.query(sql, [mail], function (err, result, fields) {
             if (err) {
-                req.flash('info', 'No existe el usuario.');
+                req.flash('error', 'No existe el usuario.');
                 res.redirect('/');
             } else {
                 let savedPass = result[0].password;
@@ -109,7 +118,11 @@ app.post('/login', function(req, res){
                         ssn = req.session;
                         ssn.mail = mail;
                         ssn.id_school = idSchool;
-                        res.redirect('/home');
+                        if (mail == 'admin@infile.com') {
+                            res.redirect('/admin');
+                        } else {
+                            res.redirect('/home');
+                        }
                     } else {
                         req.flash('error', 'Credenciales incorrectas.');
                         res.redirect('/');
@@ -384,4 +397,102 @@ app.put('/updateNotas', function(req, res){
             }
         });
     }
+});
+
+/** CONSULTAS */
+app.get('/consulta_uno', function(req, res){
+    
+    // Listar todos los alumnos del colegio DEMO1 que esten en primero, segundo y tercero primaria.
+
+    let sql = `
+        SELECT c.nombre AS colegio, a.nombre, a.apellido, g.grado
+        FROM colegio c
+        JOIN registro r
+        ON c.id_colegio = r.ref_id_colegio
+        JOIN alumno a
+        ON r.ref_id_alumno = a.id_alumno
+        JOIN matricula m
+        ON r.ref_id_alumno = m.ref_id_alumno
+        JOIN grado g
+        ON m.ref_id_grado = g.id_grado
+        WHERE c.nombre = "DEMO1"
+        AND g.id_grado IN (1,2,3)
+    `;
+
+    conn.query(sql, [], function (err, result, fields) {
+        if (err) {
+            console.log(err);
+            res.json({ 'status': false, 'msg' : 'Ocurrió un error al obtener la consulta.', 'data' : [] });
+        } else {
+            res.json({ 'status': true, 'msg' : 'OK', 'data' : result });
+        }
+    });
+
+});
+
+app.get('/consulta_dos', function(req, res){
+    
+    // Listar promedio de calificaciones de los alumnos de 2do primaria del colegio DEMO2
+
+    let sql = `
+        SELECT c.nombre AS colegio, g.grado, AVG(a.zona + a.final) AS promedio
+        FROM colegio c
+        JOIN registro r
+        ON c.id_colegio = r.ref_id_colegio
+        JOIN matricula m
+        ON r.ref_id_alumno = m.ref_id_alumno
+        JOIN grado g
+        ON m.ref_id_grado = g.id_grado
+        JOIN asignacion a
+        ON r.ref_id_alumno = a.ref_id_alumno
+        WHERE c.nombre = "DEMO2"
+        AND g.id_grado = 2
+        GROUP BY c.nombre, g.grado
+    `;
+
+    conn.query(sql, [], function (err, result, fields) {
+        if (err) {
+            console.log(err);
+            res.json({ 'status': false, 'msg' : 'Ocurrió un error al obtener la consulta.', 'data' : [] });
+        } else {
+            res.json({ 'status': true, 'msg' : 'OK', 'data' : result });
+        }
+    });
+
+});
+
+app.get('/consulta_tres', function(req, res){
+    
+    // Listar todos lo alumnos del colegio DEMO2 cuya nota final en matematica es mayor a 90, agrupador por grado, sexo
+
+    let sql = `
+        SELECT c.nombre as colegio, a.nombre, a.apellido, a.genero, g.grado, cu.nombre as curso, (ag.zona + ag.final) AS nota_final
+        FROM colegio c
+        JOIN registro r
+        ON r.ref_id_colegio = c.id_colegio
+        JOIN asignacion ag
+        ON r.ref_id_alumno = ag.ref_id_alumno
+        JOIN alumno a
+        ON r.ref_id_alumno = a.id_alumno
+        JOIN matricula m
+        ON r.ref_id_alumno = m.ref_id_alumno
+        JOIN curso cu
+        ON ag.ref_id_curso = cu.id_curso
+        JOIN grado g
+        ON m.ref_id_grado = g.id_grado
+        WHERE (ag.zona + ag.final) > 90
+        AND c.nombre = "DEMO2"
+        AND cu.nombre = "Matemática"
+        GROUP BY g.grado, a.genero
+    `;
+
+    conn.query(sql, [], function (err, result, fields) {
+        if (err) {
+            console.log(err);
+            res.json({ 'status': false, 'msg' : 'Ocurrió un error al obtener la consulta.', 'data' : [] });
+        } else {
+            res.json({ 'status': true, 'msg' : 'OK', 'data' : result });
+        }
+    });
+
 });

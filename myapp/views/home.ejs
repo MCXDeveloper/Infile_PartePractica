@@ -155,6 +155,7 @@
                                                     <th scope="col">#</th>
                                                     <th scope="col">Nombre</th>
                                                     <th scope="col">Grado</th>
+                                                    <th scope="col">Curso</th>
                                                     <th scope="col">Zona</th>
                                                     <th scope="col">Examen final</th>
                                                     <th scope="col">Guardar</th>
@@ -550,6 +551,8 @@
                                     $("<td>").html(value.nombre + ' ' + value.apellido)
                                 ).append(
                                     $("<td>").html(value.grado)
+                                ).append(
+                                    $("<td>").html(value.curso)
                                 ).append(
                                     $("<td>").append(
                                         $("<input>").attr('ref_asignacion', value.id_asignacion).attr('type', 'text').attr('class', 'form-control zoneInput').val(value.zona)

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home - Infile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js" integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/loadings.js"></script>
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="/css/infile-app.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Perfil de Administrador - Infile</a>
+            </div>
+            <ul class="nav navbar-nav" style="float: right;">
+                <li><a href="/logout">Cerrar sesión</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="text-center">ADMINISTRADOR - CONTROL DE CONSULTAS</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="container">
+            <div class="row">
+                <div id="alertMessage" class="alert alert-danger" role="alert" style="display: none;"></div>
+                <nav id="navigation">
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item active">
+                            <a class="nav-link active" id="consulta-1-tab" data-toggle="tab" href="#consulta-1" role="tab" aria-controls="home" aria-selected="true">Consulta # 1</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="consulta-2-tab" data-toggle="tab" href="#consulta-2" role="tab" aria-controls="profile" aria-selected="false">Consulta # 2</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="consulta-3-tab" data-toggle="tab" href="#consulta-3" role="tab" aria-controls="contact" aria-selected="false">Consulta # 3</a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="tab-content">
+                    <div id="consulta-1" class="tab-pane fade in active">
+                        <div class="section">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <h3>Listar todos los alumnos del colegio DEMO1 que esten en primero, segundo y tercero primaria.</h3>
+                                        <br><br>
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Colegio</th>
+                                                    <th scope="col">Nombre del estudiante</th>
+                                                    <th scope="col">Grado</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="c1BodyTable">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="consulta-2" class="tab-pane fade ">
+                        <div class="section">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p>Listar promedio de calificaciones de los alumnos de 2do primaria del colegio DEMO2.</p>
+                                    </div>
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Colegio</th>
+                                                <th scope="col">Grado</th>
+                                                <th scope="col">Promedio de calificaciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="c2BodyTable">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="consulta-3" class="tab-pane fade">
+                        <div class="section">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p>Listar todos lo alumnos del colegio DEMO2 cuya nota final en matematica es mayor a 90, agrupador por grado, sexo.</p>
+                                    </div>
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Colegio</th>
+                                                <th scope="col">Nombre del estudiante</th>
+                                                <th scope="col">Sexo</th>
+                                                <th scope="col">Grado</th>
+                                                <th scope="col">Curso</th>
+                                                <th scope="col">Nota final</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="c3BodyTable">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        
+        function c1() {
+            $.ajax({
+                type: 'GET',
+                url: '/consulta_uno',
+                timeout: 50000,
+                beforeSend: function() {},
+                success: function(obj){
+                    if (obj.status) {
+                        $("#c1BodyTable").empty();
+                        $.each(obj.data, function( index, value ) {
+                            $("#c1BodyTable").append(
+                                $("<tr>").append(
+                                    $("<th>").attr("scope", "row").html(index+1)
+                                ).append(
+                                    $("<td>").html(value.colegio)
+                                ).append(
+                                    $("<td>").html(value.nombre + ' ' + value.apellido)
+                                ).append(
+                                    $("<td>").html(value.grado)
+                                )
+                            );
+                        });
+                    } else {
+                        $('#alertMessage').html(obj.msg).show();
+                        setTimeout(function() {
+                            $('#alertMessage').fadeOut('fast');
+                        }, 3000);
+                    }
+                    
+                }
+            });
+        }
+
+        function c2() {
+            $.ajax({
+                type: 'GET',
+                url: '/consulta_dos',
+                timeout: 50000,
+                beforeSend: function() {},
+                success: function(obj){
+                    if (obj.status) {
+                        $("#c2BodyTable").empty();
+                        $.each(obj.data, function( index, value ) {
+                            $("#c2BodyTable").append(
+                                $("<tr>").append(
+                                    $("<th>").attr("scope", "row").html(index+1)
+                                ).append(
+                                    $("<td>").html(value.colegio)
+                                ).append(
+                                    $("<td>").html(value.grado)
+                                ).append(
+                                    $("<td>").html(value.promedio)
+                                )
+                            );
+                        });
+                    } else {
+                        $('#alertMessage').html(obj.msg).show();
+                        setTimeout(function() {
+                            $('#alertMessage').fadeOut('fast');
+                        }, 3000);
+                    }
+                }
+            });
+        }
+
+        function c3() {
+            $.ajax({
+                type: 'GET',
+                url: '/consulta_tres',
+                timeout: 50000,
+                beforeSend: function() {},
+                success: function(obj){
+                    if (obj.status) {
+                        $("#c3BodyTable").empty();
+                        $.each(obj.data, function( index, value ) {
+                            $("#c3BodyTable").append(
+                                $("<tr>").append(
+                                    $("<th>").attr("scope", "row").html(index+1)
+                                ).append(
+                                    $("<td>").html(value.colegio)
+                                ).append(
+                                    $("<td>").html(value.nombre + ' ' + value.apellido)
+                                ).append(
+                                    $("<td>").html(function(){
+                                        return (value.genero == '0') ? 'Hombre' : 'Mujer';
+                                    })
+                                ).append(
+                                    $("<td>").html(value.grado)
+                                ).append(
+                                    $("<td>").html(value.curso)
+                                ).append(
+                                    $("<td>").html(value.nota_final)
+                                )
+                            );
+                        });
+                    } else {
+                        $('#alertMessage').html(obj.msg).show();
+                        setTimeout(function() {
+                            $('#alertMessage').fadeOut('fast');
+                        }, 3000);
+                    }
+                }
+            });
+        }
+        
+        $(document).ready(function(){
+            
+            c1();
+            c2();
+            c3();
+            
+            $("#navigation ul.nav > li > a[id='consulta-1-tab']").on("click", function () {
+                c1();
+            });
+
+            $("#navigation ul.nav > li > a[id='consulta-2-tab']").on("click", function () {
+                c2();
+            });
+
+            $("#navigation ul.nav > li > a[id='consulta-3-tab']").on("click", function () {
+                c3();
+            });
+
+        });
+
+    </script>
+</body>
+</html>
